@@ -1,62 +1,58 @@
 #include "monty.h"
-#include <ctype.h>
 
 /**
- * check_for_digit - Checks that a string only contains digits.
- * @arg: String to check.
+ * f_push - Adds a node to the stack.
+ * @head: Pointer to the stack's head.
+ * @counter: Line number.
  *
- * Return: 0 if only digits, else 1.
+ * This function adds a new node to the stack with the integer value extracted
+ * from the global variable 'bus.arg'. If 'bus.arg' is not a valid integer,
+ * an error message is displayed, and the program exits with failure.
  */
-static int check_for_digit(char *arg)
+void f_push(stack_t **head, unsigned int counter)
 {
-    int i;
+    int n, j = 0, flag = 0;
 
-    for (i = 0; arg[i]; i++)
+    /* Check if 'bus.arg' is provided */
+    if (bus.arg)
     {
-        if (arg[i] == '-' && i == 0)
-            continue;
-        if (isdigit(arg[i]) == 0)
-            return (1);
+        /* Handle negative sign */
+        if (bus.arg[0] == '-')
+            j++;
+
+        /* Validate that 'bus.arg' is a valid integer */
+        for (; bus.arg[j] != '\0'; j++)
+        {
+            if (bus.arg[j] > 57 || bus.arg[j] < 48)
+                flag = 1;
+        }
+
+        /* Display error and exit if 'bus.arg' is not a valid integer */
+        if (flag == 1)
+        {
+            fprintf(stderr, "L%d: usage: push integer\n", counter);
+            fclose(bus.file);
+            free(bus.content);
+            free_stack(*head);
+            exit(EXIT_FAILURE);
+        }
     }
-    return (0);
-}
-
-/**
- * f_push - Pushes an integer onto the stack.
- * @stack: Double pointer to the beginning of the stack.
- * @line_number: Script line number.
- *
- * This function pushes an integer onto the stack. It extracts the integer
- * value from the string 'arg'. If 'arg' is not a valid integer, an error
- * message is displayed, and the program exits with failure.
- */
-void f_push(stack_t **stack, unsigned int line_number)
-{
-    char *arg;
-    int n;
-
-    /* Extract the argument from the command */
-    arg = strtok(NULL, "\n\t\r ");
-
-    /* Check if 'arg' is not provided or not a valid integer */
-    if (arg == NULL || check_for_digit(arg))
+    else
     {
-        dprintf(STDOUT_FILENO,
-                "L%u: usage: push integer\n",
-                line_number);
+        /* Display error and exit if 'bus.arg' is not provided */
+        fprintf(stderr, "L%d: usage: push integer\n", counter);
+        fclose(bus.file);
+        free(bus.content);
+        free_stack(*head);
         exit(EXIT_FAILURE);
     }
 
-    /* Convert 'arg' to an integer */
-    n = atoi(arg);
+    /* Convert 'bus.arg' to an integer */
+    n = atoi(bus.arg);
 
-    /* Add the integer to the stack */
-    if (!add_node(stack, n))
-    {
-        dprintf(STDOUT_FILENO, "Error: malloc failed\n");
-        exit(EXIT_FAILURE);
-    }
-
-    /* Update the stack length */
-    var.stack_len++;
+    /* Add the integer to the stack or queue based on the value of 'bus.lifi' */
+    if (bus.lifi == 0)
+        addnode(head, n);
+    else
+        addqueue(head, n);
 }
