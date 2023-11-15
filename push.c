@@ -1,30 +1,29 @@
 #include "monty.h"
 
 /**
- * f_push - Adds a new node to the stack.
- * @head: Pointer to the stack's head.
- * @counter: Line number.
+ * f_push - Adds a node to the stack.
+ * @head: Double pointer to the stack's head.
+ * @counter: Line count.
  *
- * This function adds a new node to the stack with the specified integer value.
- * The integer value is extracted from the global variable 'bus.arg'.
- * If 'bus.arg' is not a valid integer, an error message is displayed, and
- * the program exits with failure.
+ * This function adds a new node to the stack with the integer value extracted
+ * from the global variable 'bus.arg'. If 'bus.arg' is not a valid integer,
+ * an error message is displayed, and the program exits with failure.
  */
 void f_push(stack_t **head, unsigned int counter)
 {
-    int n, j = 0, flag = 0;
+    int i, m = 0, flag = 0;
 
     /* Check if 'bus.arg' is provided */
     if (bus.arg)
     {
         /* Handle negative sign */
         if (bus.arg[0] == '-')
-            j++;
+            m++;
 
         /* Validate that 'bus.arg' is a valid integer */
-        for (; bus.arg[j] != '\0'; j++)
+        for (; bus.arg[m] != '\0'; m++)
         {
-            if (bus.arg[j] > 57 || bus.arg[j] < 48)
+            if (bus.arg[m] > 57 || bus.arg[m] < 48)
                 flag = 1;
         }
 
@@ -49,11 +48,11 @@ void f_push(stack_t **head, unsigned int counter)
     }
 
     /* Convert 'bus.arg' to an integer */
-    n = atoi(bus.arg);
+    i = atoi(bus.arg);
 
     /* Add the integer to the stack or queue based on the value of 'bus.lifi' */
     if (bus.lifi == 0)
-        addnode(head, n);
+        addnode(head, i);
     else
-        addqueue(head, n);
+        addqueue(head, i);
 }

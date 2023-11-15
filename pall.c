@@ -10,19 +10,16 @@
  */
 void f_pall(stack_t **head, unsigned int counter)
 {
-    stack_t *current;
-    (void)counter;
+	stack_t *h;
+	(void)counter;
 
-    current = *head;
+	h = *head;
+	if (h == NULL)
+		return;
 
-    /* Check if the stack is empty */
-    if (current == NULL)
-        return;
-
-    /* Print each element in the stack */
-    while (current)
-    {
-        printf("%d\n", current->n);
-        current = current->next;
-    }
+	while (h)
+	{
+		printf("%d\n", h->n);
+		h = h->next;
+	}
 }
